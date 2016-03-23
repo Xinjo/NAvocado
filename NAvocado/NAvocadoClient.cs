@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -12,6 +11,9 @@ using NAvocado.Extensions;
 
 namespace NAvocado
 {
+    // TODO#001: Find a better way to filter out specific activities, casting to Array->List->Array
+    // TODO#002: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required
+
     public class NAvocadoClient
     {
         /// <summary>
@@ -120,7 +122,7 @@ namespace NAvocado
         /// <exception cref="AuthenticationFailedException"></exception>
         public async Task<bool> Login(string email, SecureString password)
         {
-            // NOTE: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required
+            // TODO#002: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required
             return await Login(email, password.ConvertToUnsecureString());
         }
 
@@ -279,6 +281,7 @@ namespace NAvocado
 
             switch (type)
             {
+                // TODO#001: Find a better way to filter out specific activities, casting to Array->List->Array
                 case NAvocadoActivityType.Message:
                     return a.ToList().FindAll(i => i.Type == "message").ToArray();
                 case NAvocadoActivityType.Kiss:
