@@ -203,8 +203,7 @@ namespace NAvocado
                 response.EnsureSuccessStatusCode();
 
                 return
-                    new JavaScriptSerializer().Deserialize<NAvocadoUser[]>(await response.Content.ReadAsStringAsync())[0
-                        ];
+                    new JavaScriptSerializer().Deserialize<NAvocadoUser[]>(await response.Content.ReadAsStringAsync())[0];
             }
         }
 
@@ -231,8 +230,7 @@ namespace NAvocado
                 }
 
                 return
-                    new JavaScriptSerializer().Deserialize<NAvocadoUser[]>(await response.Content.ReadAsStringAsync())[0
-                        ];
+                    new JavaScriptSerializer().Deserialize<NAvocadoUser[]>(await response.Content.ReadAsStringAsync())[0];
             }
         }
 
@@ -305,7 +303,7 @@ namespace NAvocado
         }
 
         /// <summary>
-        ///     Get all activities <b>after</b> a certain time.
+        ///     Get all activities after a certain time.
         /// </summary>
         /// <param name="time"><see cref="DateTime" /> representing</param>
         /// <returns></returns>
@@ -315,7 +313,7 @@ namespace NAvocado
         }
 
         /// <summary>
-        ///     Get all activities <b>before</b> a certain time.
+        ///     Get all activities before a certain time.
         /// </summary>
         /// <param name="time"></param>
         /// <returns></returns>
