@@ -13,6 +13,7 @@ namespace NAvocado
 {
     // TODO#001: Find a better way to filter out specific activities, casting to Array->List->Array
     // TODO#002: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required
+    // TODO#003: Find a more fancy and easier to read solution to get the cookie value
 
     public class NAvocadoClient
     {
@@ -38,13 +39,23 @@ namespace NAvocado
         ///     The maximum amount of requests per day. By default this is set on 10k, as per
         ///     https://avocado.io/guacamole/avocado-api#api-throttle-limits.
         /// </summary>
-        public static int MaxRateLimit = 10000;
+        public int MaxRateLimit = 10000;
 
         /// <summary>
         ///     Everytime a request is made and <see cref="EnableRateLimiting" /> is set to true, the library will update
         ///     <see cref="CurrentRate" />.
         /// </summary>
-        public static int CurrentRate;
+        public int CurrentRate;
+
+        /// <summary>
+        ///     Enable whether rate limiting should be used.
+        ///     If <see cref="EnableRateLimiting" /> is false, no <see cref="RateLimitException" />s will be thrown.
+        /// </summary>
+        /// <remarks>
+        ///     Even though <see cref="EnableRateLimiting" /> is set to false, Avocado still rate limit incoming requests on
+        ///     their servers.
+        /// </remarks>
+        public bool EnableRateLimiting = false;
 
         /// <summary>
         ///     The Developer ID provided to you by Avocado.
@@ -81,16 +92,6 @@ namespace NAvocado
         ///     the Avocado API requires this value to be present during the request.
         /// </summary>
         private string _signature;
-
-        /// <summary>
-        ///     Enable whether rate limiting should be used.
-        ///     If <see cref="EnableRateLimiting" /> is false, no <see cref="RateLimitException" />s will be thrown.
-        /// </summary>
-        /// <remarks>
-        ///     Even though <see cref="EnableRateLimiting" /> is set to false, Avocado still rate limit incoming requests on
-        ///     their servers.
-        /// </remarks>
-        public bool EnableRateLimiting = false;
 
         /// <summary>
         ///     Create a new instance of the <see cref="NAvocadoClient" /> class, this will handle all communication between the
@@ -164,6 +165,7 @@ namespace NAvocado
 
                 var tempCookie = response.Headers.First(x => x.Key == "Set-Cookie").Value.First();
 
+                // TODO#003: Find a more fancy and easier to read solution to get the cookie value
                 _cookieValue = tempCookie.Substring(tempCookie.IndexOf("=") + 1,
                     tempCookie.IndexOf(";") - tempCookie.IndexOf("=") - 1);
 
@@ -174,10 +176,8 @@ namespace NAvocado
 
                 _httpClient.DefaultRequestHeaders.Add("X-AvoSig", _signature);
 
-
                 return response.StatusCode == HttpStatusCode.OK && response.Headers.Contains("Set-Cookie");
             }
-            // }
         }
 
         /// <summary>
@@ -196,17 +196,7 @@ namespace NAvocado
         /// <exception cref="RateLimitException"></exception>
         public async Task<NAvocadoUser> CurrentUser()
         {
-            await CheckRateLimit();
-
-            using (var response = await _httpClient.GetAsync(ApiUrlUser))
-            {
-                await IncrementCurrentRate(1);
-
-                response.EnsureSuccessStatusCode();
-
-                return
-                    new JavaScriptSerializer().Deserialize<NAvocadoUser[]>(await response.Content.ReadAsStringAsync())[0];
-            }
+            return await GetSingleAsync<NAvocadoUser>(ApiUrlUser);
         }
 
         /// <summary>
@@ -237,16 +227,17 @@ namespace NAvocado
         }
 
         /// <summary>
-        ///     Retrieve the <see cref="NAvocadoCouple" /> the <see cref="NAvocadoUser" /> is in
+        ///     Retrieve the <see cref="NAvocadoCouple" /> the <see cref="NAvocadoUser" /> is in.
         /// </summary>
         /// <returns><see cref="NAvocadoCouple" /> object, containing both <see cref="NAvocadoUser" />s</returns>
         /// <remarks>
-        ///     It might be smart if you immediatly call this instead of <see cref="GetCurrentUser" />, this will save a
-        ///     call to the Avocado servers
+        ///     -   It might be smart if you immediatly call this instead of <see cref="GetCurrentUser" />, this will save a
+        ///         call to the Avocado servers.
+        ///     -   The second <see cref="NAvocadoUser"/> item will be null if current <see cref="NAvocadoUser"/> is not in a couple.
         /// </remarks>
         public async Task<NAvocadoCouple> Couple()
         {
-            return await SpecialMethodForCoupleObjectBecauseWtf<NAvocadoCouple>(ApiUrlCouple);
+            return await SpecialMethodForCoupleStyledJSONRepresentedObjectBecauseWtf<NAvocadoCouple>(ApiUrlCouple);
         }
 
         /// <summary>
@@ -281,7 +272,7 @@ namespace NAvocado
 
             switch (type)
             {
-                // TODO#001: Find a better way to filter out specific activities, casting to Array->List->Array
+                // TODO#001: Find a better way to filter out specific activities, casting to Array->List->Array is overkill imo
                 case NAvocadoActivityType.Message:
                     return a.ToList().FindAll(i => i.Type == "message").ToArray();
                 case NAvocadoActivityType.Kiss:
@@ -341,6 +332,7 @@ namespace NAvocado
         }
 
         /// <summary>
+        /// Send a Hug
         /// </summary>
         /// <returns></returns>
         public async Task<bool> Hug()
@@ -349,6 +341,7 @@ namespace NAvocado
         }
 
         /// <summary>
+        /// Get all <see cref="NAvocadoList"/>s.
         /// </summary>
         /// <returns></returns>
         public async Task<NAvocadoList[]> Lists()
@@ -357,6 +350,7 @@ namespace NAvocado
         }
 
         /// <summary>
+        /// Get a <see cref="NAvocadoList"/> by id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -366,17 +360,18 @@ namespace NAvocado
         }
 
         /// <summary>
+        /// Create a new <see cref="NAvocadoList"/> with the provided name
         /// </summary>
         /// <param name="listName"></param>
         /// <returns></returns>
-        public async Task<bool> CreateList(string listName)
+        public async Task<NAvocadoList> CreateList(string listName)
         {
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("name", listName)
             });
 
-            return await PostAsync(ApiUrlLists, content);
+            return await PostAsync<NAvocadoList>(ApiUrlLists, content);
         }
 
         /// <summary>
@@ -384,14 +379,14 @@ namespace NAvocado
         /// <param name="id"></param>
         /// <param name="newName"></param>
         /// <returns></returns>
-        public async Task<bool> RenameList(string id, string newName)
+        public async Task<NAvocadoList> RenameList(string id, string newName)
         {
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("name", newName)
             });
 
-            return await PostAsync(ApiUrlLists + id, content);
+            return await PostAsync<NAvocadoList>(ApiUrlLists + id, content);
         }
 
         /// <summary>
@@ -436,7 +431,7 @@ namespace NAvocado
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        private async Task<T> SpecialMethodForCoupleObjectBecauseWtf<T>(string url)
+        private async Task<T> SpecialMethodForCoupleStyledJSONRepresentedObjectBecauseWtf<T>(string url)
         {
             await CheckRateLimit();
 
@@ -510,18 +505,35 @@ namespace NAvocado
         }
 
         /// <summary>
-        /// Post data, ASYNC! FUCK YEAH!
+        /// Post data, ASYNC! FUCK YEAH! This is a fire-and-forget style web request, we don't really care what the response is aslong as the server told us that it was OK (200)
         /// </summary>
         /// <param name="url">The url to post to</param>
         /// <param name="content">The content to post</param>
         /// <returns>True if response is 200; otherwise false</returns>
-        private async Task<bool> PostAsync(string url, FormUrlEncodedContent content)
+        private async Task<bool> PostAsync(string url, HttpContent content)
         {
             using (var response = await _httpClient.PostAsync(url, content))
             {
                 response.EnsureSuccessStatusCode();
 
                 return response.StatusCode == HttpStatusCode.OK;
+            }
+        }
+
+        /// <summary>
+        /// Post data aswell! But we also expect something in return! Also async.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="url"></param>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        private async Task<T> PostAsync<T>(string url, HttpContent content)
+        {
+            using (var response = await _httpClient.PostAsync(url, content))
+            {
+                response.EnsureSuccessStatusCode();
+
+                return new JavaScriptSerializer().Deserialize<T[]>(await response.Content.ReadAsStringAsync())[0];
             }
         }
         #endregion
