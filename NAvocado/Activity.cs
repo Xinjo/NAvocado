@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace NAvocado
 {
     /// <summary>
-    /// Not implemented, relic of ye olde days
+    ///     Not implemented, relic of ye olde days
     /// </summary>
     public class UploadToken
     {
@@ -19,8 +15,8 @@ namespace NAvocado
         public string Text { get; set; }
         public string Id { get; set; }
         public UploadToken UploadToken { get; set; }
-        public NAvocadoImageInfo Info { get; set; }
-        public NAvocadoImageUrls ImageUrls { get; set; }
+        public ImageInfo Info { get; set; }
+        public ImageUrls ImageUrls { get; set; }
         public string Caption { get; set; }
         public string Url { get; set; }
         public string ThumbnailUrl { get; set; }
@@ -28,7 +24,8 @@ namespace NAvocado
         public string StatusType { get; set; }
         public List<string> Urls { get; set; }
     }
-    public class NAvocadoActivity
+
+    public class Activity
     {
         public string Action { get; set; }
         public bool Bookmarked { get; set; }
@@ -37,7 +34,5 @@ namespace NAvocado
         public object TimeCreated { get; set; }
         public string Type { get; set; }
         public string UserId { get; set; }
-
-       
     }
 }

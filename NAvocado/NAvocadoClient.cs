@@ -36,28 +36,6 @@ namespace NAvocado
         public const string ApiUrlMedia = ApiUrlBase + "media/";
 
         /// <summary>
-        ///     The maximum amount of requests per day. By default this is set on 10k, as per
-        ///     https://avocado.io/guacamole/avocado-api#api-throttle-limits.
-        /// </summary>
-        public int MaxRateLimit = 10000;
-
-        /// <summary>
-        ///     Everytime a request is made and <see cref="EnableRateLimiting" /> is set to true, the library will update
-        ///     <see cref="CurrentRate" />.
-        /// </summary>
-        public int CurrentRate;
-
-        /// <summary>
-        ///     Enable whether rate limiting should be used.
-        ///     If <see cref="EnableRateLimiting" /> is false, no <see cref="RateLimitException" />s will be thrown.
-        /// </summary>
-        /// <remarks>
-        ///     Even though <see cref="EnableRateLimiting" /> is set to false, Avocado still rate limit incoming requests on
-        ///     their servers.
-        /// </remarks>
-        public bool EnableRateLimiting = false;
-
-        /// <summary>
         ///     The Developer ID provided to you by Avocado.
         /// </summary>
         private readonly string _devId;
@@ -92,6 +70,28 @@ namespace NAvocado
         ///     the Avocado API requires this value to be present during the request.
         /// </summary>
         private string _signature;
+
+        /// <summary>
+        ///     Everytime a request is made and <see cref="EnableRateLimiting" /> is set to true, the library will update
+        ///     <see cref="CurrentRate" />.
+        /// </summary>
+        public int CurrentRate;
+
+        /// <summary>
+        ///     Enable whether rate limiting should be used.
+        ///     If <see cref="EnableRateLimiting" /> is false, no <see cref="RateLimitException" />s will be thrown.
+        /// </summary>
+        /// <remarks>
+        ///     Even though <see cref="EnableRateLimiting" /> is set to false, Avocado still rate limit incoming requests on
+        ///     their servers.
+        /// </remarks>
+        public bool EnableRateLimiting = false;
+
+        /// <summary>
+        ///     The maximum amount of requests per day. By default this is set on 10k, as per
+        ///     https://avocado.io/guacamole/avocado-api#api-throttle-limits.
+        /// </summary>
+        public int MaxRateLimit = 10000;
 
         /// <summary>
         ///     Create a new instance of the <see cref="NAvocadoClient" /> class, this will handle all communication between the
@@ -181,7 +181,7 @@ namespace NAvocado
         }
 
         /// <summary>
-        /// Log the current <see cref="NAvocadoUser"/> out
+        ///     Log the current <see cref="NAvocado.User" /> out
         /// </summary>
         /// <returns>True if successful; otherwise false</returns>
         public async Task<bool> Logout()
@@ -190,23 +190,23 @@ namespace NAvocado
         }
 
         /// <summary>
-        ///     Retrieve the <see cref="NAvocadoUser" /> that is associated with the provided Email
+        ///     Retrieve the <see cref="NAvocado.User" /> that is associated with the provided Email
         /// </summary>
-        /// <returns><see cref="NAvocadoUser" /> object</returns>
+        /// <returns><see cref="NAvocado.User" /> object</returns>
         /// <exception cref="RateLimitException"></exception>
-        public async Task<NAvocadoUser> CurrentUser()
+        public async Task<User> CurrentUser()
         {
-            return await GetSingleAsync<NAvocadoUser>(ApiUrlUser);
+            return await GetSingleAsync<User>(ApiUrlUser);
         }
 
         /// <summary>
-        ///     Find a <see cref="NAvocadoUser" /> with the provided id.
+        ///     Find a <see cref="NAvocado.User" /> with the provided id.
         /// </summary>
-        /// <param name="id">Id of the <see cref="NAvocadoUser" /> you want to find</param>
-        /// <returns><see cref="NAvocadoUser" /> object</returns>
+        /// <param name="id">Id of the <see cref="NAvocado.User" /> you want to find</param>
+        /// <returns><see cref="NAvocado.User" /> object</returns>
         /// <exception cref="RateLimitException"></exception>
         /// <exception cref="UserNotFoundException"></exception>
-        public async Task<NAvocadoUser> User(string id)
+        public async Task<User> User(string id)
         {
             await CheckRateLimit();
 
@@ -222,30 +222,31 @@ namespace NAvocado
                 }
 
                 return
-                    new JavaScriptSerializer().Deserialize<NAvocadoUser[]>(await response.Content.ReadAsStringAsync())[0];
+                    new JavaScriptSerializer().Deserialize<User[]>(await response.Content.ReadAsStringAsync())[0];
             }
         }
 
         /// <summary>
-        ///     Retrieve the <see cref="NAvocadoCouple" /> the <see cref="NAvocadoUser" /> is in.
+        ///     Retrieve the <see cref="NAvocado.Couple" /> the <see cref="NAvocado.User" /> is in.
         /// </summary>
-        /// <returns><see cref="NAvocadoCouple" /> object, containing both <see cref="NAvocadoUser" />s</returns>
+        /// <returns><see cref="NAvocado.Couple" /> object, containing both <see cref="NAvocado.User" />s</returns>
         /// <remarks>
         ///     -   It might be smart if you immediatly call this instead of <see cref="GetCurrentUser" />, this will save a
-        ///         call to the Avocado servers.
-        ///     -   The second <see cref="NAvocadoUser"/> item will be null if current <see cref="NAvocadoUser"/> is not in a couple.
+        ///     call to the Avocado servers.
+        ///     -   The second <see cref="NAvocado.User" /> item will be null if current <see cref="NAvocado.User" /> is not in a
+        ///     couple.
         /// </remarks>
-        public async Task<NAvocadoCouple> Couple()
+        public async Task<Couple> Couple()
         {
-            return await SpecialMethodForCoupleStyledJSONRepresentedObjectBecauseWtf<NAvocadoCouple>(ApiUrlCouple);
+            return await SpecialMethodForCoupleStyledJSONRepresentedObjectBecauseWtf<Couple>(ApiUrlCouple);
         }
 
         /// <summary>
         ///     Get the last 100 activities
         /// </summary>
-        /// <returns>Array of <see cref="NAvocadoActivity" /></returns>
+        /// <returns>Array of <see cref="Activity" /></returns>
         /// <remarks>If you want activities before the last 100, use <see cref="ActivitiesBefore" /></remarks>
-        public async Task<NAvocadoActivity[]> Activities()
+        public async Task<Activity[]> Activities()
         {
             await CheckRateLimit();
 
@@ -256,7 +257,7 @@ namespace NAvocado
                 response.EnsureSuccessStatusCode();
 
                 return
-                    new JavaScriptSerializer().Deserialize<NAvocadoActivity[]>(
+                    new JavaScriptSerializer().Deserialize<Activity[]>(
                         await response.Content.ReadAsStringAsync());
             }
         }
@@ -266,30 +267,30 @@ namespace NAvocado
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public async Task<NAvocadoActivity[]> ActivitiesByType(NAvocadoActivityType type)
+        public async Task<Activity[]> ActivitiesByType(ActivityType type)
         {
             var a = await Activities();
 
             switch (type)
             {
                 // TODO#001: Find a better way to filter out specific activities, casting to Array->List->Array is overkill imo
-                case NAvocadoActivityType.Message:
+                case ActivityType.Message:
                     return a.ToList().FindAll(i => i.Type == "message").ToArray();
-                case NAvocadoActivityType.Kiss:
+                case ActivityType.Kiss:
                     return a.ToList().FindAll(i => i.Type == "kiss").ToArray();
-                case NAvocadoActivityType.Hug:
+                case ActivityType.Hug:
                     return a.ToList().FindAll(i => i.Type == "hug").ToArray();
-                case NAvocadoActivityType.List:
+                case ActivityType.List:
                     return a.ToList().FindAll(i => i.Type == "list").ToArray();
-                case NAvocadoActivityType.Photo:
+                case ActivityType.Photo:
                     return a.ToList().FindAll(i => i.Type == "photo").ToArray();
-                case NAvocadoActivityType.Media:
+                case ActivityType.Media:
                     return a.ToList().FindAll(i => i.Type == "media").ToArray();
-                case NAvocadoActivityType.Activity:
+                case ActivityType.Activity:
                     return a.ToList().FindAll(i => i.Type == "activity").ToArray();
-                case NAvocadoActivityType.Couple:
+                case ActivityType.Couple:
                     return a.ToList().FindAll(i => i.Type == "couple").ToArray();
-                case NAvocadoActivityType.User:
+                case ActivityType.User:
                     return a.ToList().FindAll(i => i.Type == "user").ToArray();
                 default:
                     return a;
@@ -301,9 +302,9 @@ namespace NAvocado
         /// </summary>
         /// <param name="time"><see cref="DateTime" /> representing</param>
         /// <returns></returns>
-        public async Task<NAvocadoActivity[]> ActivitiesAfter(DateTime time)
+        public async Task<Activity[]> ActivitiesAfter(DateTime time)
         {
-            return await GetArrayAsync<NAvocadoActivity>(ApiUrlActivities + "?after=" + time.ToUnixTimestampAsLong());
+            return await GetArrayAsync<Activity>(ApiUrlActivities + "?after=" + time.ToUnixTimestampAsLong());
         }
 
         /// <summary>
@@ -311,13 +312,13 @@ namespace NAvocado
         /// </summary>
         /// <param name="time"></param>
         /// <returns></returns>
-        public async Task<NAvocadoActivity[]> ActivitiesBefore(DateTime time)
+        public async Task<Activity[]> ActivitiesBefore(DateTime time)
         {
-            return await GetArrayAsync<NAvocadoActivity>(ApiUrlActivities + "?before=" + time.ToUnixTimestampAsLong());
+            return await GetArrayAsync<Activity>(ApiUrlActivities + "?before=" + time.ToUnixTimestampAsLong());
         }
 
         /// <summary>
-        /// Send a message to the Avocado API and the other use in the <see cref="NAvocadoCouple"/>.
+        ///     Send a message to the Avocado API and the other use in the <see cref="NAvocado.Couple" />.
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
@@ -332,7 +333,7 @@ namespace NAvocado
         }
 
         /// <summary>
-        /// Send a Hug
+        ///     Send a Hug
         /// </summary>
         /// <returns></returns>
         public async Task<bool> Hug()
@@ -341,37 +342,37 @@ namespace NAvocado
         }
 
         /// <summary>
-        /// Get all <see cref="NAvocadoList"/>s.
+        ///     Get all <see cref="NAvocado.List" />s.
         /// </summary>
         /// <returns></returns>
-        public async Task<NAvocadoList[]> Lists()
+        public async Task<List[]> Lists()
         {
-            return await GetArrayAsync<NAvocadoList>(ApiUrlLists);
+            return await GetArrayAsync<List>(ApiUrlLists);
         }
 
         /// <summary>
-        /// Get a <see cref="NAvocadoList"/> by id.
+        ///     Get a <see cref="NAvocado.List" /> by id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<NAvocadoList> List(string id)
+        public async Task<List> List(string id)
         {
-            return await GetSingleAsync<NAvocadoList>(ApiUrlLists + id);
+            return await GetSingleAsync<List>(ApiUrlLists + id);
         }
 
         /// <summary>
-        /// Create a new <see cref="NAvocadoList"/> with the provided name
+        ///     Create a new <see cref="NAvocado.List" /> with the provided name
         /// </summary>
         /// <param name="listName"></param>
         /// <returns></returns>
-        public async Task<NAvocadoList> CreateList(string listName)
+        public async Task<List> CreateList(string listName)
         {
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("name", listName)
             });
 
-            return await PostAsync<NAvocadoList>(ApiUrlLists, content);
+            return await PostAsync<List>(ApiUrlLists, content);
         }
 
         /// <summary>
@@ -379,14 +380,14 @@ namespace NAvocado
         /// <param name="id"></param>
         /// <param name="newName"></param>
         /// <returns></returns>
-        public async Task<NAvocadoList> RenameList(string id, string newName)
+        public async Task<List> RenameList(string id, string newName)
         {
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("name", newName)
             });
 
-            return await PostAsync<NAvocadoList>(ApiUrlLists + id, content);
+            return await PostAsync<List>(ApiUrlLists + id, content);
         }
 
         /// <summary>
@@ -399,6 +400,7 @@ namespace NAvocado
         }
 
         #region Private Areas ( ͡° ͜ʖ ͡°)
+
         private async Task IncrementCurrentRate(int incrementBy)
         {
             await Task.Factory.StartNew(() =>
@@ -411,7 +413,8 @@ namespace NAvocado
         }
 
         /// <summary>
-        /// Check if the rate limit ihas been exceeded and throw an exception to notify the application, <see cref="EnableRateLimiting"/> should be true.
+        ///     Check if the rate limit ihas been exceeded and throw an exception to notify the application,
+        ///     <see cref="EnableRateLimiting" /> should be true.
         /// </summary>
         /// <returns>Nothing; otherwise an error</returns>
         private async Task CheckRateLimit()
@@ -426,8 +429,9 @@ namespace NAvocado
         }
 
         /// <summary>
-        /// <see cref="GetSingleAsync{T}"/> will not work for <see cref="NAvocadoCouple"/>, so this mthod is dedicated for the special ones.
-        /// Everything is returned as array except <see cref="NAvocadoCouple"/>, why is this even a thing?
+        ///     <see cref="GetSingleAsync{T}" /> will not work for <see cref="NAvocado.Couple" />, so this method is dedicated for
+        ///     the special ones.
+        ///     Everything is returned as array except <see cref="NAvocado.Couple" />, why is this even a thing?
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
@@ -446,7 +450,7 @@ namespace NAvocado
         }
 
         /// <summary>
-        /// Get nothing async? Por que? What is this sorcery?
+        ///     Get nothing async? Por que? What is this sorcery?
         /// </summary>
         /// <param name="url"></param>
         /// <returns>True if we got nothing!; otherwise... false???</returns>
@@ -465,7 +469,7 @@ namespace NAvocado
         }
 
         /// <summary>
-        ///    Get data, as a sinlge instance type thingy object stuff? ASYNC?!
+        ///     Get data, as a sinlge instance type thingy object stuff? ASYNC?!
         /// </summary>
         /// <typeparam name="T">The type the object should be of (english?)</typeparam>
         /// <param name="url"></param>
@@ -485,7 +489,7 @@ namespace NAvocado
         }
 
         /// <summary>
-        /// Get data, as an array and it's ASYNC!
+        ///     Get data, as an array and it's ASYNC!
         /// </summary>
         /// <typeparam name="T">The object type the array should be of (english?)</typeparam>
         /// <param name="url"></param>
@@ -505,15 +509,20 @@ namespace NAvocado
         }
 
         /// <summary>
-        /// Post data, ASYNC! FUCK YEAH! This is a fire-and-forget style web request, we don't really care what the response is aslong as the server told us that it was OK (200)
+        ///     Post data, ASYNC! FUCK YEAH! This is a fire-and-forget style web request, we don't really care what the response is
+        ///     aslong as the server told us that it was OK (200)
         /// </summary>
         /// <param name="url">The url to post to</param>
         /// <param name="content">The content to post</param>
         /// <returns>True if response is 200; otherwise false</returns>
         private async Task<bool> PostAsync(string url, HttpContent content)
         {
+            await CheckRateLimit();
+
             using (var response = await _httpClient.PostAsync(url, content))
             {
+                await IncrementCurrentRate(1);
+
                 response.EnsureSuccessStatusCode();
 
                 return response.StatusCode == HttpStatusCode.OK;
@@ -521,7 +530,7 @@ namespace NAvocado
         }
 
         /// <summary>
-        /// Post data aswell! But we also expect something in return! Also async.
+        ///     Post data aswell! But we also expect something in return! Also async.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="url"></param>
@@ -529,13 +538,18 @@ namespace NAvocado
         /// <returns></returns>
         private async Task<T> PostAsync<T>(string url, HttpContent content)
         {
+            await CheckRateLimit();
+
             using (var response = await _httpClient.PostAsync(url, content))
             {
+                await IncrementCurrentRate(1);
+
                 response.EnsureSuccessStatusCode();
 
                 return new JavaScriptSerializer().Deserialize<T[]>(await response.Content.ReadAsStringAsync())[0];
             }
         }
+
         #endregion
     }
 }

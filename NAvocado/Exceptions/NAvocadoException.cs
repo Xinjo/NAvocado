@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NAvocado.Exceptions
 {
@@ -26,11 +22,13 @@ namespace NAvocado.Exceptions
         {
         }
 
-        public NAvocadoException(string message, Exception innerException, WebExceptionStatus status, WebResponse response) : base(message, innerException, status, response)
+        public NAvocadoException(string message, Exception innerException, WebExceptionStatus status,
+            WebResponse response) : base(message, innerException, status, response)
         {
         }
 
-        protected NAvocadoException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext)
+        protected NAvocadoException(SerializationInfo serializationInfo, StreamingContext streamingContext)
+            : base(serializationInfo, streamingContext)
         {
         }
     }

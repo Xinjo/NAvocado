@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NAvocado
+﻿namespace NAvocado
 {
-    public class NAvocadoImageUrls
+    public class ImageUrls
     {
         public string Small { get; set; }
         public string Medium { get; set; }

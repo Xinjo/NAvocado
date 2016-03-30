@@ -3,16 +3,16 @@
 namespace NAvocado
 {
     [DataContract]
-    public class NAvocadoCouple
+    public class Couple
     {
         [DataMember(Name = "id")]
         public string Id { get; set; }
 
         [DataMember(Name = "currentUser")]
-        public NAvocadoUser CurrentUser { get; set; }
+        public User CurrentUser { get; set; }
 
         [DataMember(Name = "otherUser")]
-        public NAvocadoUser OtherUser { get; set; }
+        public User OtherUser { get; set; }
 
         [DataMember(Name = "subscription")]
         public object Subscription { get; set; }

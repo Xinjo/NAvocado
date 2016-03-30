@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NAvocado.Exceptions
 {
-    class BadRequestException : NAvocadoException
+    internal class BadRequestException : NAvocadoException
     {
         public BadRequestException()
         {
@@ -26,11 +22,13 @@ namespace NAvocado.Exceptions
         {
         }
 
-        public BadRequestException(string message, Exception innerException, WebExceptionStatus status, WebResponse response) : base(message, innerException, status, response)
+        public BadRequestException(string message, Exception innerException, WebExceptionStatus status,
+            WebResponse response) : base(message, innerException, status, response)
         {
         }
 
-        protected BadRequestException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext)
+        protected BadRequestException(SerializationInfo serializationInfo, StreamingContext streamingContext)
+            : base(serializationInfo, streamingContext)
         {
         }
     }
