@@ -11,7 +11,6 @@ using NAvocado.Extensions;
 
 namespace NAvocado
 {
-    // TODO#001: Find a better way to filter out specific activities, casting to Array->List->Array
     // TODO#002: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required
     // TODO#003: Find a more fancy and easier to read solution to get the cookie value
 
@@ -270,28 +269,29 @@ namespace NAvocado
         public async Task<Activity[]> ActivitiesByType(ActivityType type)
         {
             var a = await Activities();
+           
 
             switch (type)
             {
-                // TODO#001: Find a better way to filter out specific activities, casting to Array->List->Array is overkill imo
                 case ActivityType.Message:
-                    return a.ToList().FindAll(i => i.Type == "message").ToArray();
+                    //return a.ToList().FindAll(i => i.Type == "message").ToArray();
+                    return a.Where(i => i.Type == "message") as Activity[];
                 case ActivityType.Kiss:
-                    return a.ToList().FindAll(i => i.Type == "kiss").ToArray();
+                    return a.Where(i => i.Type == "kiss") as Activity[];
                 case ActivityType.Hug:
-                    return a.ToList().FindAll(i => i.Type == "hug").ToArray();
+                    return a.Where(i => i.Type == "hug") as Activity[];
                 case ActivityType.List:
-                    return a.ToList().FindAll(i => i.Type == "list").ToArray();
+                    return a.Where(i => i.Type == "list") as Activity[];
                 case ActivityType.Photo:
-                    return a.ToList().FindAll(i => i.Type == "photo").ToArray();
+                    return a.Where(i => i.Type == "photo") as Activity[];
                 case ActivityType.Media:
-                    return a.ToList().FindAll(i => i.Type == "media").ToArray();
+                    return a.Where(i => i.Type == "media") as Activity[];
                 case ActivityType.Activity:
-                    return a.ToList().FindAll(i => i.Type == "activity").ToArray();
+                    return a.Where(i => i.Type == "activity") as Activity[];
                 case ActivityType.Couple:
-                    return a.ToList().FindAll(i => i.Type == "couple").ToArray();
+                    return a.Where(i => i.Type == "couple") as Activity[];
                 case ActivityType.User:
-                    return a.ToList().FindAll(i => i.Type == "user").ToArray();
+                    return a.Where(i => i.Type == "user") as Activity[];
                 default:
                     return a;
             }
