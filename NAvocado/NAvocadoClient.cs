@@ -116,6 +116,7 @@ namespace NAvocado
         /// </remarks>
         /// <exception cref="RateLimitException"></exception>
         /// <exception cref="AuthenticationFailedException"></exception>
+        /// <exception cref="HttpRequestException"></exception>
         public async Task<bool> Login(string email, string password)
         {
             _email = email;
@@ -178,6 +179,7 @@ namespace NAvocado
         /// <returns><see cref="NAvocado.User" /> object</returns>
         /// <exception cref="RateLimitException"></exception>
         /// <exception cref="UserNotFoundException"></exception>
+        /// <exception cref="HttpRequestException"></exception>
         public async Task<User> User(string id)
         {
             using (var response = await _httpClient.GetAsync(ApiUrlUser + id))
@@ -214,6 +216,7 @@ namespace NAvocado
         /// </summary>
         /// <returns>Array of <see cref="Activity" /></returns>
         /// <remarks>If you want activities before the last 100, use <see cref="ActivitiesBefore" /></remarks>
+        /// <exception cref="HttpRequestException"></exception>
         public async Task<Activity[]> Activities()
         {
             using (var response = await _httpClient.GetAsync(ApiUrlActivities))
@@ -372,6 +375,7 @@ namespace NAvocado
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
+        /// <exception cref="HttpRequestException"></exception>
         private async Task<T> SpecialMethodForCoupleStyledJSONRepresentedObjectBecauseWtf<T>(string url)
         {
             using (var response = await _httpClient.GetAsync(url))
@@ -388,6 +392,7 @@ namespace NAvocado
         /// </summary>
         /// <param name="url"></param>
         /// <returns>True if we got nothing!; otherwise... false???</returns>
+        /// <exception cref="HttpRequestException"></exception>
         private async Task<bool> GetNothingAsync(string url)
         {
             using (var response = await _httpClient.GetAsync(url))
@@ -404,6 +409,7 @@ namespace NAvocado
         /// <typeparam name="T">The type the object should be of (english?)</typeparam>
         /// <param name="url"></param>
         /// <returns></returns>
+        /// <exception cref="HttpRequestException"></exception>
         private async Task<T> GetSingleAsync<T>(string url)
         {
             using (var response = await _httpClient.GetAsync(url))
@@ -420,6 +426,7 @@ namespace NAvocado
         /// <typeparam name="T">The object type the array should be of (english?)</typeparam>
         /// <param name="url"></param>
         /// <returns></returns>
+        /// <exception cref="HttpRequestException"></exception>
         private async Task<T[]> GetArrayAsync<T>(string url)
         {
             using (var response = await _httpClient.GetAsync(url))
@@ -437,6 +444,7 @@ namespace NAvocado
         /// <param name="url">The url to post to</param>
         /// <param name="content">The content to post</param>
         /// <returns>True if response is 200; otherwise false</returns>
+        /// <exception cref="HttpRequestException"></exception>
         private async Task<bool> PostAsync(string url, HttpContent content)
         {
             using (var response = await _httpClient.PostAsync(url, content))
@@ -454,6 +462,7 @@ namespace NAvocado
         /// <param name="url"></param>
         /// <param name="content"></param>
         /// <returns></returns>
+        /// <exception cref="HttpRequestException"></exception>
         private async Task<T> PostAsync<T>(string url, HttpContent content)
         {
             using (var response = await _httpClient.PostAsync(url, content))
