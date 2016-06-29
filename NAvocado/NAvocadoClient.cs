@@ -20,17 +20,69 @@ namespace NAvocado
         /// </summary>
         public const string UserAgent = "NAvocado v0.0.1";
 
+        /// <summary>
+        ///     The Email that the user/client uses to autheticate itself with the Avocado API.
+        /// </summary>
+        public string Email { get; private set; } = string.Empty;
+
+        /// <summary>
+        ///     Url: https://avocado.io/api/
+        /// </summary>
         public const string ApiUrlBase = "https://avocado.io/api/";
+
+        /// <summary>
+        ///     Url: https://avocado.io/api/authentication/login
+        /// </summary>
         public const string ApiUrlLogin = ApiUrlBase + "authentication/login";
+
+        /// <summary>
+        ///     Url: https://avocado.io/api/authentication/logout
+        /// </summary>
         public const string ApiUrlLogout = ApiUrlBase + "authentication/logout";
+
+        /// <summary>
+        ///     Url: https://avocado.io/api/user/
+        /// </summary>
         public const string ApiUrlUser = ApiUrlBase + "user/";
+
+        /// <summary>
+        ///     Url: https://avocado.io/api/couple/
+        /// </summary>
         public const string ApiUrlCouple = ApiUrlBase + "couple/";
+
+        /// <summary>
+        ///     Url: https://avocado.io/api/activities/
+        /// </summary>
         public const string ApiUrlActivities = ApiUrlBase + "activities/";
+
+        /// <summary>
+        ///     Url: https://avocado.io/api/lists/
+        /// </summary>
         public const string ApiUrlLists = ApiUrlBase + "lists/";
+
+        /// <summary>
+        ///     Url: https://avocado.io/api/conversation/
+        /// </summary>
         public const string ApiUrlConversation = ApiUrlBase + "conversation/";
+
+        /// <summary>
+        ///     Url: https://avocado.io/api/conversation/kiss/
+        /// </summary>
         public const string ApiUrlConversationKiss = ApiUrlConversation + "kiss/";
+
+        /// <summary>
+        ///     Url: https://avocado.io/api/conversation/hug/
+        /// </summary>
         public const string ApiUrlConversationHug = ApiUrlConversation + "hug/";
+
+        /// <summary>
+        ///     Url: https://avocado.io/api/calender/
+        /// </summary>
         public const string ApiUrlCalendar = ApiUrlBase + "calendar/";
+
+        /// <summary>
+        ///     Url: https://avocado.io/api/media/
+        /// </summary>
         public const string ApiUrlMedia = ApiUrlBase + "media/";
 
         /// <summary>
@@ -57,11 +109,6 @@ namespace NAvocado
         ///     The Cookie value returned by Avocado after a successful request.
         /// </summary>
         private string _cookieValue;
-
-        /// <summary>
-        ///     The Email that the user/client uses to autheticate itself with the Avocado API.
-        /// </summary>
-        private string _email;
 
         /// <summary>
         ///     A SHA256 hashed string that indicates that the intial authetication with Avocado was successful, every request with
@@ -99,7 +146,7 @@ namespace NAvocado
         /// <exception cref="AuthenticationFailedException"></exception>
         public async Task<bool> Login(string email, SecureString password)
         {
-            // TODO#002: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required
+            // TODO#002: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required, if possible
             return await Login(email, password.ConvertToUnsecureString());
         }
 
@@ -119,7 +166,7 @@ namespace NAvocado
         /// <exception cref="HttpRequestException"></exception>
         public async Task<bool> Login(string email, string password)
         {
-            _email = email;
+            Email = email;
 
             var credentials = new FormUrlEncodedContent(new[]
             {
@@ -380,7 +427,6 @@ namespace NAvocado
         {
             using (var response = await _httpClient.GetAsync(url))
             {
-
                 response.EnsureSuccessStatusCode();
 
                 return new JavaScriptSerializer().Deserialize<T>(await response.Content.ReadAsStringAsync());

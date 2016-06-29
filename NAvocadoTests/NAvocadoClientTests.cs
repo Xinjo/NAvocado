@@ -11,7 +11,7 @@ namespace NAvocadoTests
         private string _userPassword;
 
         [SetUp]
-        public void Init()
+        public void SetUp()
         {  
         }
 
@@ -116,6 +116,12 @@ namespace NAvocadoTests
         public void UserTest()
         {
             Assert.Fail();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+
         }
     }
 }

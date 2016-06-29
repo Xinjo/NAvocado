@@ -1,0 +1,11 @@
+C:\Users\Michel\documents\visual studio 2015\Projects\NAvocado\NAvocadoTests\bin\Debug\NAvocadoTests.dll
+C:\Users\Michel\documents\visual studio 2015\Projects\NAvocado\NAvocadoTests\bin\Debug\NAvocadoTests.pdb
+C:\Users\Michel\documents\visual studio 2015\Projects\NAvocado\NAvocadoTests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\Users\Michel\documents\visual studio 2015\Projects\NAvocado\NAvocadoTests\bin\Debug\NAvocado.dll
+C:\Users\Michel\documents\visual studio 2015\Projects\NAvocado\NAvocadoTests\bin\Debug\nunit.framework.dll
+C:\Users\Michel\documents\visual studio 2015\Projects\NAvocado\NAvocadoTests\bin\Debug\NAvocado.pdb
+C:\Users\Michel\documents\visual studio 2015\Projects\NAvocado\NAvocadoTests\bin\Debug\nunit.framework.xml
+C:\Users\Michel\documents\visual studio 2015\Projects\NAvocado\NAvocadoTests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.xml
+C:\Users\Michel\documents\visual studio 2015\Projects\NAvocado\NAvocadoTests\obj\Debug\NAvocadoTests.csprojResolveAssemblyReference.cache
+C:\Users\Michel\documents\visual studio 2015\Projects\NAvocado\NAvocadoTests\obj\Debug\NAvocadoTests.dll
+C:\Users\Michel\documents\visual studio 2015\Projects\NAvocado\NAvocadoTests\obj\Debug\NAvocadoTests.pdb
