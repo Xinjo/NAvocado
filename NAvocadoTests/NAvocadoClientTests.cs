@@ -2,7 +2,7 @@
 
 namespace NAvocadoTests
 {
-    [TestFixture()]
+    [TestFixture]
     public class NAvocadoClientTests
     {
         private string _devId;
@@ -10,110 +10,110 @@ namespace NAvocadoTests
         private string _userEmail;
         private string _userPassword;
 
-        [Test()]
-        public void NAvocadoClientTest()
-        {
-            Assert.Fail();
+        [SetUp]
+        public void Init()
+        {  
         }
 
-        [Test()]
-        public void LoginTest()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
-        public void LoginTest1()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
-        public void LogoutTest()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
-        public void CurrentUserTest()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
-        public void UserTest()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
-        public void CoupleTest()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
-        public void ActivitiesTest()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
-        public void ActivitiesByTypeTest()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
+        [Test]
         public void ActivitiesAfterTest()
         {
             Assert.Fail();
         }
 
-        [Test()]
+        [Test]
         public void ActivitiesBeforeTest()
         {
             Assert.Fail();
         }
 
-        [Test()]
-        public void MessageTest()
+        [Test]
+        public void ActivitiesByTypeTest()
         {
             Assert.Fail();
         }
 
-        [Test()]
-        public void HugTest()
+        [Test]
+        public void ActivitiesTest()
         {
             Assert.Fail();
         }
 
-        [Test()]
-        public void ListsTest()
+        [Test]
+        public void CoupleTest()
         {
             Assert.Fail();
         }
 
-        [Test()]
-        public void ListTest()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
+        [Test]
         public void CreateListTest()
         {
             Assert.Fail();
         }
 
-        [Test()]
+        [Test]
+        public void CurrentUserTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void DeleteListTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void HugTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void ListsTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void ListTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void LoginTest()
+        {
+            Assert.Fail();
+        }
+
+
+        [Test]
+        public void LogoutTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void MessageTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void NAvocadoClientTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
         public void RenameListTest()
         {
             Assert.Fail();
         }
 
-        [Test()]
-        public void DeleteListTest()
+        [Test]
+        public void UserTest()
         {
             Assert.Fail();
         }
