@@ -133,8 +133,6 @@ namespace NAvocado
                     throw new BadRequestException("Bad username or password");
                 }
 
-                await IncrementCurrentRate(1);
-
                 response.EnsureSuccessStatusCode();
 
                 var tempCookie = response.Headers.First(x => x.Key == "Set-Cookie").Value.First();
@@ -184,8 +182,6 @@ namespace NAvocado
         {
             using (var response = await _httpClient.GetAsync(ApiUrlUser + id))
             {
-                await IncrementCurrentRate(1);
-
                 response.EnsureSuccessStatusCode();
 
                 if (response.StatusCode == HttpStatusCode.NotFound)
@@ -222,8 +218,6 @@ namespace NAvocado
         {
             using (var response = await _httpClient.GetAsync(ApiUrlActivities))
             {
-                await IncrementCurrentRate(1);
-
                 response.EnsureSuccessStatusCode();
 
                 return
