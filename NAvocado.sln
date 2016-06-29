@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAvocado", "NAvocado\NAvocado.csproj", "{03F2BA46-B216-4993-94A4-B9D5CCD519EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAvocadoTests", "NAvocadoTests\NAvocadoTests.csproj", "{7A425F18-01BA-4FBE-9D44-323A23118A8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +17,10 @@ Global
 		{03F2BA46-B216-4993-94A4-B9D5CCD519EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03F2BA46-B216-4993-94A4-B9D5CCD519EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03F2BA46-B216-4993-94A4-B9D5CCD519EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A425F18-01BA-4FBE-9D44-323A23118A8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A425F18-01BA-4FBE-9D44-323A23118A8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A425F18-01BA-4FBE-9D44-323A23118A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A425F18-01BA-4FBE-9D44-323A23118A8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

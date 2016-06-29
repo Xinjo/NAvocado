@@ -13,7 +13,6 @@ namespace NAvocado
 {
     // TODO#002: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required
     // TODO#003: Find a more fancy and easier to read solution to get the cookie value
-
     public class NAvocadoClient
     {
         /// <summary>
@@ -71,28 +70,6 @@ namespace NAvocado
         private string _signature;
 
         /// <summary>
-        ///     Everytime a request is made and <see cref="EnableRateLimiting" /> is set to true, the library will update
-        ///     <see cref="CurrentRate" />.
-        /// </summary>
-        public int CurrentRate;
-
-        /// <summary>
-        ///     Enable whether rate limiting should be used.
-        ///     If <see cref="EnableRateLimiting" /> is false, no <see cref="RateLimitException" />s will be thrown.
-        /// </summary>
-        /// <remarks>
-        ///     Even though <see cref="EnableRateLimiting" /> is set to false, Avocado still rate limit incoming requests on
-        ///     their servers.
-        /// </remarks>
-        public bool EnableRateLimiting = false;
-
-        /// <summary>
-        ///     The maximum amount of requests per day. By default this is set on 10k, as per
-        ///     https://avocado.io/guacamole/avocado-api#api-throttle-limits.
-        /// </summary>
-        public int MaxRateLimit = 10000;
-
-        /// <summary>
         ///     Create a new instance of the <see cref="NAvocadoClient" /> class, this will handle all communication between the
         ///     application and Avocado API endpoint.
         /// </summary>
@@ -141,8 +118,6 @@ namespace NAvocado
         /// <exception cref="AuthenticationFailedException"></exception>
         public async Task<bool> Login(string email, string password)
         {
-            await CheckRateLimit();
-
             _email = email;
 
             var credentials = new FormUrlEncodedContent(new[]
@@ -207,8 +182,6 @@ namespace NAvocado
         /// <exception cref="UserNotFoundException"></exception>
         public async Task<User> User(string id)
         {
-            await CheckRateLimit();
-
             using (var response = await _httpClient.GetAsync(ApiUrlUser + id))
             {
                 await IncrementCurrentRate(1);
@@ -247,8 +220,6 @@ namespace NAvocado
         /// <remarks>If you want activities before the last 100, use <see cref="ActivitiesBefore" /></remarks>
         public async Task<Activity[]> Activities()
         {
-            await CheckRateLimit();
-
             using (var response = await _httpClient.GetAsync(ApiUrlActivities))
             {
                 await IncrementCurrentRate(1);
@@ -269,7 +240,6 @@ namespace NAvocado
         public async Task<Activity[]> ActivitiesByType(ActivityType type)
         {
             var a = await Activities();
-           
 
             switch (type)
             {
@@ -401,33 +371,6 @@ namespace NAvocado
 
         #region Private Areas ( ͡° ͜ʖ ͡°)
 
-        private async Task IncrementCurrentRate(int incrementBy)
-        {
-            await Task.Factory.StartNew(() =>
-            {
-                if (EnableRateLimiting)
-                {
-                    CurrentRate = CurrentRate + incrementBy;
-                }
-            });
-        }
-
-        /// <summary>
-        ///     Check if the rate limit ihas been exceeded and throw an exception to notify the application,
-        ///     <see cref="EnableRateLimiting" /> should be true.
-        /// </summary>
-        /// <returns>Nothing; otherwise an error</returns>
-        private async Task CheckRateLimit()
-        {
-            await Task.Factory.StartNew(() =>
-            {
-                if (EnableRateLimiting && CurrentRate >= MaxRateLimit)
-                {
-                    throw new RateLimitException("CurrentRate exceeds MaxRateLimit");
-                }
-            });
-        }
-
         /// <summary>
         ///     <see cref="GetSingleAsync{T}" /> will not work for <see cref="NAvocado.Couple" />, so this method is dedicated for
         ///     the special ones.
@@ -437,11 +380,8 @@ namespace NAvocado
         /// <returns></returns>
         private async Task<T> SpecialMethodForCoupleStyledJSONRepresentedObjectBecauseWtf<T>(string url)
         {
-            await CheckRateLimit();
-
             using (var response = await _httpClient.GetAsync(url))
             {
-                await IncrementCurrentRate(1);
 
                 response.EnsureSuccessStatusCode();
 
@@ -456,12 +396,8 @@ namespace NAvocado
         /// <returns>True if we got nothing!; otherwise... false???</returns>
         private async Task<bool> GetNothingAsync(string url)
         {
-            await CheckRateLimit();
-
             using (var response = await _httpClient.GetAsync(url))
             {
-                await IncrementCurrentRate(1);
-
                 response.EnsureSuccessStatusCode();
 
                 return response.StatusCode == HttpStatusCode.OK;
@@ -476,12 +412,8 @@ namespace NAvocado
         /// <returns></returns>
         private async Task<T> GetSingleAsync<T>(string url)
         {
-            await CheckRateLimit();
-
             using (var response = await _httpClient.GetAsync(url))
             {
-                await IncrementCurrentRate(1);
-
                 response.EnsureSuccessStatusCode();
 
                 return new JavaScriptSerializer().Deserialize<T[]>(await response.Content.ReadAsStringAsync())[0];
@@ -496,12 +428,8 @@ namespace NAvocado
         /// <returns></returns>
         private async Task<T[]> GetArrayAsync<T>(string url)
         {
-            await CheckRateLimit();
-
             using (var response = await _httpClient.GetAsync(url))
             {
-                await IncrementCurrentRate(1);
-
                 response.EnsureSuccessStatusCode();
 
                 return new JavaScriptSerializer().Deserialize<T[]>(await response.Content.ReadAsStringAsync());
@@ -517,12 +445,8 @@ namespace NAvocado
         /// <returns>True if response is 200; otherwise false</returns>
         private async Task<bool> PostAsync(string url, HttpContent content)
         {
-            await CheckRateLimit();
-
             using (var response = await _httpClient.PostAsync(url, content))
             {
-                await IncrementCurrentRate(1);
-
                 response.EnsureSuccessStatusCode();
 
                 return response.StatusCode == HttpStatusCode.OK;
@@ -538,12 +462,8 @@ namespace NAvocado
         /// <returns></returns>
         private async Task<T> PostAsync<T>(string url, HttpContent content)
         {
-            await CheckRateLimit();
-
             using (var response = await _httpClient.PostAsync(url, content))
             {
-                await IncrementCurrentRate(1);
-
                 response.EnsureSuccessStatusCode();
 
                 return new JavaScriptSerializer().Deserialize<T[]>(await response.Content.ReadAsStringAsync())[0];
