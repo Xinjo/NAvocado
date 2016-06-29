@@ -36,7 +36,7 @@ namespace NAvocado
         /// <summary>
         ///     UserAgent that is send with the request, identifying that an application used this library.
         /// </summary>
-        public const string UserAgent = "NAvocado v0.0.1";
+        public const string UserAgent = "NAvocado v0.1.0";
 
         /// <summary>
         ///     The Email that the user/client uses to autheticate itself with the Avocado API.
@@ -163,7 +163,7 @@ namespace NAvocado
         /// <exception cref="AuthenticationFailedException"></exception>
         public async Task<bool> Login(string email, SecureString password)
         {
-            // TODO#002: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required, if possible
+            // TODO#099: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required, if possible
             return await Login(email, password.ConvertToUnsecureString());
         }
 
