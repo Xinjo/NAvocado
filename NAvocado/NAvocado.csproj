@@ -51,7 +51,6 @@
     <Compile Include="Couple.cs" />
     <Compile Include="Exceptions\AuthenticationFailedException.cs" />
     <Compile Include="Exceptions\BadRequestException.cs" />
-    <Compile Include="Exceptions\RateLimitException.cs" />
     <Compile Include="Exceptions\UserNotFoundException.cs" />
     <Compile Include="Extensions\SecureStringExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />

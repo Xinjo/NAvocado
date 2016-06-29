@@ -9,10 +9,28 @@ using System.Web.Script.Serialization;
 using NAvocado.Exceptions;
 using NAvocado.Extensions;
 
+/*
+Recipe — The world's best guacamole recipe.
+
+1. Two near-ripe avocados, lightly smooshed
+2. Juice from one lime
+3. A dash of kosher salt
+4. Ground cumin & cayenne pepper to taste (optional)
+5. Freshly ground pepper to taste
+6. Nothing else
+
+We will guac your world.
+*/
+
 namespace NAvocado
 {
-    // TODO#002: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required
-    // TODO#003: Find a more fancy and easier to read solution to get the cookie value
+    // TODO#000: Implement all the functions that the API provides, link: https://avocado.io/guacamole/avocado-api
+    // TODO#001: List Items (Create/Edit/Delete)
+    // TODO#002: Calender Models (Event/Reminder)
+    // TODO#003: Calender Methods (Events Show/Create/Edit/Delete) (Reminders Create/Edit/Delete)
+    // TODO#004: Media (Upload/Listing/Delete)
+    // TODO#099: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required
+    // TODO#100: Find a more fancy and easier to read solution to get the cookie value
     public class NAvocadoClient
     {
         /// <summary>
@@ -96,7 +114,7 @@ namespace NAvocado
         private readonly string _devKey;
 
         /// <summary>
-        ///     Underlying
+        ///     Underlying <see cref="HttpClient"/> that will handle all requests
         /// </summary>
         private readonly HttpClient _httpClient;
 
@@ -142,7 +160,6 @@ namespace NAvocado
         /// <param name="email">Email provided</param>
         /// <param name="password"></param>
         /// <returns>True if authentication was successful; otherwise false</returns>
-        /// <exception cref="RateLimitException"></exception>
         /// <exception cref="AuthenticationFailedException"></exception>
         public async Task<bool> Login(string email, SecureString password)
         {
@@ -161,7 +178,6 @@ namespace NAvocado
         ///     The authentication code is based on
         ///     https://github.com/xdumaine/Avocado/blob/master/Avocado/Models/AuthClient.cs.
         /// </remarks>
-        /// <exception cref="RateLimitException"></exception>
         /// <exception cref="AuthenticationFailedException"></exception>
         /// <exception cref="HttpRequestException"></exception>
         public async Task<bool> Login(string email, string password)
@@ -185,7 +201,7 @@ namespace NAvocado
 
                 var tempCookie = response.Headers.First(x => x.Key == "Set-Cookie").Value.First();
 
-                // TODO#003: Find a more fancy and easier to read solution to get the cookie value
+                // TODO#100: Find a more fancy and easier to read solution (for me) to get the cookie value
                 _cookieValue = tempCookie.Substring(tempCookie.IndexOf("=") + 1,
                     tempCookie.IndexOf(";") - tempCookie.IndexOf("=") - 1);
 
@@ -213,7 +229,6 @@ namespace NAvocado
         ///     Retrieve the <see cref="NAvocado.User" /> that is associated with the provided Email
         /// </summary>
         /// <returns><see cref="NAvocado.User" /> object</returns>
-        /// <exception cref="RateLimitException"></exception>
         public async Task<User> CurrentUser()
         {
             return await GetSingleAsync<User>(ApiUrlUser);
@@ -224,7 +239,6 @@ namespace NAvocado
         /// </summary>
         /// <param name="id">Id of the <see cref="NAvocado.User" /> you want to find</param>
         /// <returns><see cref="NAvocado.User" /> object</returns>
-        /// <exception cref="RateLimitException"></exception>
         /// <exception cref="UserNotFoundException"></exception>
         /// <exception cref="HttpRequestException"></exception>
         public async Task<User> User(string id)
@@ -288,7 +302,6 @@ namespace NAvocado
             switch (type)
             {
                 case ActivityType.Message:
-                    //return a.ToList().FindAll(i => i.Type == "message").ToArray();
                     return a.Where(i => i.Type == "message") as Activity[];
                 case ActivityType.Kiss:
                     return a.Where(i => i.Type == "kiss") as Activity[];
@@ -306,6 +319,8 @@ namespace NAvocado
                     return a.Where(i => i.Type == "couple") as Activity[];
                 case ActivityType.User:
                     return a.Where(i => i.Type == "user") as Activity[];
+                case ActivityType.None:
+                    return a;
                 default:
                     return a;
             }
@@ -367,7 +382,7 @@ namespace NAvocado
         /// <summary>
         ///     Get a <see cref="NAvocado.List" /> by id.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Id of the list</param>
         /// <returns></returns>
         public async Task<List> List(string id)
         {
@@ -377,7 +392,7 @@ namespace NAvocado
         /// <summary>
         ///     Create a new <see cref="NAvocado.List" /> with the provided name
         /// </summary>
-        /// <param name="listName"></param>
+        /// <param name="listName">Name of the <see cref="NAvocado.List"/></param>
         /// <returns></returns>
         public async Task<List> CreateList(string listName)
         {
@@ -390,9 +405,10 @@ namespace NAvocado
         }
 
         /// <summary>
+        ///     Rename a <see cref="NAvocado.List"/>
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="newName"></param>
+        /// <param name="id">Id of the <see cref="NAvocado.List"/></param>
+        /// <param name="newName">New name for the <see cref="NAvocado.List"/></param>
         /// <returns></returns>
         public async Task<List> RenameList(string id, string newName)
         {
@@ -405,8 +421,9 @@ namespace NAvocado
         }
 
         /// <summary>
+        ///     Delete a <see cref="NAvocado.List"/> by id.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">If of the <see cref="NAvocado.List"/></param>
         /// <returns></returns>
         public async Task<bool> DeleteList(string id)
         {
@@ -417,7 +434,7 @@ namespace NAvocado
 
         /// <summary>
         ///     <see cref="GetSingleAsync{T}" /> will not work for <see cref="NAvocado.Couple" />, so this method is dedicated for
-        ///     the special ones.
+        ///     the 'special' ones.
         ///     Everything is returned as array except <see cref="NAvocado.Couple" />, why is this even a thing?
         /// </summary>
         /// <param name="url"></param>
@@ -437,7 +454,7 @@ namespace NAvocado
         ///     Get nothing async? Por que? What is this sorcery?
         /// </summary>
         /// <param name="url"></param>
-        /// <returns>True if we got nothing!; otherwise... false???</returns>
+        /// <returns>True if we got nothing (status code 200/OK)!; otherwise... false???</returns>
         /// <exception cref="HttpRequestException"></exception>
         private async Task<bool> GetNothingAsync(string url)
         {
