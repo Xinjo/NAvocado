@@ -197,7 +197,7 @@ namespace NAvocado
             {
                 if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    throw new NAvocadoException("Bad username or password");
+                    throw new NAvocadoException(response.StatusCode + ": Bad username or password");
                 }
 
                 response.EnsureSuccessStatusCode();
@@ -252,7 +252,7 @@ namespace NAvocado
 
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    throw new NAvocadoException("User not found or inaccessible to you");
+                    throw new NAvocadoException(response.StatusCode + ": User not found or inaccessible to you");
                 }
 
                 return
