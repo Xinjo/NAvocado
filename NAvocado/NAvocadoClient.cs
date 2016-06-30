@@ -164,7 +164,7 @@ namespace NAvocado
         /// <param name="email">Email provided</param>
         /// <param name="password"></param>
         /// <returns>True if authentication was successful; otherwise false</returns>
-        /// <exception cref="AuthenticationFailedException"></exception>
+        /// <exception cref="HttpRequestException"></exception>
         public async Task<bool> Login(string email, SecureString password)
         {
             // TODO#099: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required, if possible
@@ -182,7 +182,6 @@ namespace NAvocado
         ///     The authentication code is based on
         ///     https://github.com/xdumaine/Avocado/blob/master/Avocado/Models/AuthClient.cs.
         /// </remarks>
-        /// <exception cref="AuthenticationFailedException"></exception>
         /// <exception cref="HttpRequestException"></exception>
         public async Task<bool> Login(string email, string password)
         {
@@ -198,7 +197,7 @@ namespace NAvocado
             {
                 if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    throw new BadRequestException("Bad username or password");
+                    throw new NAvocadoException("Bad username or password");
                 }
 
                 response.EnsureSuccessStatusCode();
@@ -253,7 +252,7 @@ namespace NAvocado
 
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    throw new UserNotFoundException("User not found or inaccessible to you");
+                    throw new NAvocadoException("User not found or inaccessible to you");
                 }
 
                 return
