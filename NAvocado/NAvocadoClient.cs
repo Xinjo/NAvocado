@@ -36,6 +36,9 @@ namespace NAvocado
         /// <summary>
         ///     UserAgent that is send with the request, identifying that an application used this library.
         /// </summary>
+        /// <remarks>
+        ///     Versioning based on SemVar (http://semver.org/)
+        /// </remarks>
         public const string UserAgent = "NAvocado v0.1.0";
 
         /// <summary>
