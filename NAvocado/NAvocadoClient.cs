@@ -39,11 +39,6 @@ namespace NAvocado
         public const string UserAgent = "NAvocado v0.1.0";
 
         /// <summary>
-        ///     The Email that the user/client uses to autheticate itself with the Avocado API.
-        /// </summary>
-        public string Email { get; private set; } = string.Empty;
-
-        /// <summary>
         ///     Url: https://avocado.io/api/
         /// </summary>
         public const string ApiUrlBase = "https://avocado.io/api/";
@@ -114,7 +109,7 @@ namespace NAvocado
         private readonly string _devKey;
 
         /// <summary>
-        ///     Underlying <see cref="HttpClient"/> that will handle all requests
+        ///     Underlying <see cref="HttpClient" /> that will handle all requests
         /// </summary>
         private readonly HttpClient _httpClient;
 
@@ -135,7 +130,8 @@ namespace NAvocado
         private string _signature;
 
         /// <summary>
-        ///     Create a new instance of the <see cref="NAvocadoClient" /> class, this will handle all communication between the
+        ///     Create a new instance of the <see cref="NAvocadoClient" /> class, this will handle all communication
+        ///     between the
         ///     application and Avocado API endpoint.
         /// </summary>
         /// <param name="devId">Avocado Developer ID</param>
@@ -154,6 +150,11 @@ namespace NAvocado
         }
 
         /// <summary>
+        ///     The Email that the user/client uses to autheticate itself with the Avocado API.
+        /// </summary>
+        public string Email { get; private set; } = string.Empty;
+
+        /// <summary>
         ///     Autheticate the <see cref="NAvocadoClient" /> with the Avocado API using the email and password provided by the
         ///     user.
         /// </summary>
@@ -164,7 +165,7 @@ namespace NAvocado
         public async Task<bool> Login(string email, SecureString password)
         {
             // TODO#099: Password is no longer 'secure' after calling ConvertToUnsecureString() (seems obvious), it is visible in memory and therefor a better solution will be required, if possible
-            return await Login(email, password.ConvertToUnsecureString());
+            return await Login(email, password.ConvertToUnsecureString()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -190,7 +191,7 @@ namespace NAvocado
                 new KeyValuePair<string, string>("password", password)
             });
 
-            using (var response = await _httpClient.PostAsync(ApiUrlLogin, credentials))
+            using (var response = await _httpClient.PostAsync(ApiUrlLogin, credentials).ConfigureAwait(false))
             {
                 if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
@@ -222,7 +223,7 @@ namespace NAvocado
         /// <returns>True if successful; otherwise false</returns>
         public async Task<bool> Logout()
         {
-            return await GetNothingAsync(ApiUrlLogout);
+            return await GetNothingAsync(ApiUrlLogout).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -231,7 +232,7 @@ namespace NAvocado
         /// <returns><see cref="NAvocado.User" /> object</returns>
         public async Task<User> CurrentUser()
         {
-            return await GetSingleAsync<User>(ApiUrlUser);
+            return await GetSingleAsync<User>(ApiUrlUser).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -243,7 +244,7 @@ namespace NAvocado
         /// <exception cref="HttpRequestException"></exception>
         public async Task<User> User(string id)
         {
-            using (var response = await _httpClient.GetAsync(ApiUrlUser + id))
+            using (var response = await _httpClient.GetAsync(ApiUrlUser + id).ConfigureAwait(false))
             {
                 response.EnsureSuccessStatusCode();
 
@@ -253,7 +254,7 @@ namespace NAvocado
                 }
 
                 return
-                    new JavaScriptSerializer().Deserialize<User[]>(await response.Content.ReadAsStringAsync())[0];
+                    new JavaScriptSerializer().Deserialize<User[]>(await response.Content.ReadAsStringAsync().ConfigureAwait(false))[0];
             }
         }
 
@@ -280,13 +281,13 @@ namespace NAvocado
         /// <exception cref="HttpRequestException"></exception>
         public async Task<Activity[]> Activities()
         {
-            using (var response = await _httpClient.GetAsync(ApiUrlActivities))
+            using (var response = await _httpClient.GetAsync(ApiUrlActivities).ConfigureAwait(false))
             {
                 response.EnsureSuccessStatusCode();
 
                 return
                     new JavaScriptSerializer().Deserialize<Activity[]>(
-                        await response.Content.ReadAsStringAsync());
+                        await response.Content.ReadAsStringAsync().ConfigureAwait(false));
             }
         }
 
@@ -297,7 +298,7 @@ namespace NAvocado
         /// <returns></returns>
         public async Task<Activity[]> ActivitiesByType(ActivityType type)
         {
-            var a = await Activities();
+            var a = await Activities().ConfigureAwait(false);
 
             switch (type)
             {
@@ -333,7 +334,7 @@ namespace NAvocado
         /// <returns></returns>
         public async Task<Activity[]> ActivitiesAfter(DateTime time)
         {
-            return await GetArrayAsync<Activity>(ApiUrlActivities + "?after=" + time.ToUnixTimestampAsLong());
+            return await GetArrayAsync<Activity>(ApiUrlActivities + "?after=" + time.ToUnixTimestampAsLong()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -343,7 +344,7 @@ namespace NAvocado
         /// <returns></returns>
         public async Task<Activity[]> ActivitiesBefore(DateTime time)
         {
-            return await GetArrayAsync<Activity>(ApiUrlActivities + "?before=" + time.ToUnixTimestampAsLong());
+            return await GetArrayAsync<Activity>(ApiUrlActivities + "?before=" + time.ToUnixTimestampAsLong()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -358,7 +359,7 @@ namespace NAvocado
                 new KeyValuePair<string, string>("message", message)
             });
 
-            return await PostAsync(ApiUrlConversation, content);
+            return await PostAsync(ApiUrlConversation, content).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -367,7 +368,7 @@ namespace NAvocado
         /// <returns></returns>
         public async Task<bool> Hug()
         {
-            return await PostAsync(ApiUrlConversationHug, null);
+            return await PostAsync(ApiUrlConversationHug, null).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -376,7 +377,7 @@ namespace NAvocado
         /// <returns></returns>
         public async Task<List[]> Lists()
         {
-            return await GetArrayAsync<List>(ApiUrlLists);
+            return await GetArrayAsync<List>(ApiUrlLists).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -386,13 +387,13 @@ namespace NAvocado
         /// <returns></returns>
         public async Task<List> List(string id)
         {
-            return await GetSingleAsync<List>(ApiUrlLists + id);
+            return await GetSingleAsync<List>(ApiUrlLists + id).ConfigureAwait(false);
         }
 
         /// <summary>
         ///     Create a new <see cref="NAvocado.List" /> with the provided name
         /// </summary>
-        /// <param name="listName">Name of the <see cref="NAvocado.List"/></param>
+        /// <param name="listName">Name of the <see cref="NAvocado.List" /></param>
         /// <returns></returns>
         public async Task<List> CreateList(string listName)
         {
@@ -401,14 +402,14 @@ namespace NAvocado
                 new KeyValuePair<string, string>("name", listName)
             });
 
-            return await PostAsync<List>(ApiUrlLists, content);
+            return await PostAsync<List>(ApiUrlLists, content).ConfigureAwait(false);
         }
 
         /// <summary>
-        ///     Rename a <see cref="NAvocado.List"/>
+        ///     Rename a <see cref="NAvocado.List" />
         /// </summary>
-        /// <param name="id">Id of the <see cref="NAvocado.List"/></param>
-        /// <param name="newName">New name for the <see cref="NAvocado.List"/></param>
+        /// <param name="id">Id of the <see cref="NAvocado.List" /></param>
+        /// <param name="newName">New name for the <see cref="NAvocado.List" /></param>
         /// <returns></returns>
         public async Task<List> RenameList(string id, string newName)
         {
@@ -417,17 +418,17 @@ namespace NAvocado
                 new KeyValuePair<string, string>("name", newName)
             });
 
-            return await PostAsync<List>(ApiUrlLists + id, content);
+            return await PostAsync<List>(ApiUrlLists + id, content).ConfigureAwait(false);
         }
 
         /// <summary>
-        ///     Delete a <see cref="NAvocado.List"/> by id.
+        ///     Delete a <see cref="NAvocado.List" /> by id.
         /// </summary>
-        /// <param name="id">If of the <see cref="NAvocado.List"/></param>
+        /// <param name="id">If of the <see cref="NAvocado.List" /></param>
         /// <returns></returns>
         public async Task<bool> DeleteList(string id)
         {
-            return await PostAsync(ApiUrlLists + id + "/delete", null);
+            return await PostAsync(ApiUrlLists + id + "/delete", null).ConfigureAwait(false);
         }
 
         #region Private Areas ( ͡° ͜ʖ ͡°)
@@ -442,11 +443,11 @@ namespace NAvocado
         /// <exception cref="HttpRequestException"></exception>
         private async Task<T> SpecialMethodForCoupleStyledJSONRepresentedObjectBecauseWtf<T>(string url)
         {
-            using (var response = await _httpClient.GetAsync(url))
+            using (var response = await _httpClient.GetAsync(url).ConfigureAwait(false))
             {
                 response.EnsureSuccessStatusCode();
 
-                return new JavaScriptSerializer().Deserialize<T>(await response.Content.ReadAsStringAsync());
+                return new JavaScriptSerializer().Deserialize<T>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
             }
         }
 
@@ -458,7 +459,7 @@ namespace NAvocado
         /// <exception cref="HttpRequestException"></exception>
         private async Task<bool> GetNothingAsync(string url)
         {
-            using (var response = await _httpClient.GetAsync(url))
+            using (var response = await _httpClient.GetAsync(url).ConfigureAwait(false))
             {
                 response.EnsureSuccessStatusCode();
 
@@ -475,11 +476,11 @@ namespace NAvocado
         /// <exception cref="HttpRequestException"></exception>
         private async Task<T> GetSingleAsync<T>(string url)
         {
-            using (var response = await _httpClient.GetAsync(url))
+            using (var response = await _httpClient.GetAsync(url).ConfigureAwait(false))
             {
                 response.EnsureSuccessStatusCode();
 
-                return new JavaScriptSerializer().Deserialize<T[]>(await response.Content.ReadAsStringAsync())[0];
+                return new JavaScriptSerializer().Deserialize<T[]>(await response.Content.ReadAsStringAsync().ConfigureAwait(false))[0];
             }
         }
 
@@ -492,11 +493,11 @@ namespace NAvocado
         /// <exception cref="HttpRequestException"></exception>
         private async Task<T[]> GetArrayAsync<T>(string url)
         {
-            using (var response = await _httpClient.GetAsync(url))
+            using (var response = await _httpClient.GetAsync(url).ConfigureAwait(false))
             {
                 response.EnsureSuccessStatusCode();
 
-                return new JavaScriptSerializer().Deserialize<T[]>(await response.Content.ReadAsStringAsync());
+                return new JavaScriptSerializer().Deserialize<T[]>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
             }
         }
 
@@ -510,7 +511,7 @@ namespace NAvocado
         /// <exception cref="HttpRequestException"></exception>
         private async Task<bool> PostAsync(string url, HttpContent content)
         {
-            using (var response = await _httpClient.PostAsync(url, content))
+            using (var response = await _httpClient.PostAsync(url, content).ConfigureAwait(false))
             {
                 response.EnsureSuccessStatusCode();
 
@@ -528,11 +529,11 @@ namespace NAvocado
         /// <exception cref="HttpRequestException"></exception>
         private async Task<T> PostAsync<T>(string url, HttpContent content)
         {
-            using (var response = await _httpClient.PostAsync(url, content))
+            using (var response = await _httpClient.PostAsync(url, content).ConfigureAwait(false))
             {
                 response.EnsureSuccessStatusCode();
 
-                return new JavaScriptSerializer().Deserialize<T[]>(await response.Content.ReadAsStringAsync())[0];
+                return new JavaScriptSerializer().Deserialize<T[]>(await response.Content.ReadAsStringAsync().ConfigureAwait(false))[0];
             }
         }
 
